@@ -36,9 +36,12 @@ public sealed class RectPacker<TAllocator>(TAllocator? allocator = null)
         ArgumentOutOfRangeException.ThrowIfLessThan(output.Length, input.Length);
 
         var n = input.Length;
+        if (n <= 0)
         {
-            EnsureCapacity(n);
+            return default(RectWh);
         }
+
+        EnsureCapacity(n);
 
         for (var i = 0; i < n; i++)
         {
@@ -74,9 +77,12 @@ public sealed class RectPacker<TAllocator>(TAllocator? allocator = null)
         ArgumentOutOfRangeException.ThrowIfLessThan(output.Length, input.Length);
 
         var n = input.Length;
+        if (n <= 0)
         {
-            EnsureCapacity(n);
+            return default(RectWh);
         }
+
+        EnsureCapacity(n);
 
         for (var i = 0; i < n; i++)
         {
@@ -188,9 +194,7 @@ public sealed class RectPacker<TAllocator>(TAllocator? allocator = null)
 
     private void EnsureCapacity(int n)
     {
-        // Special case when 0, since we want to ensure orders' elements get
-        // initialized (even if they're zero-length arrays).
-        if (subjects.Length >= n && subjects.Length != 0)
+        if (subjects.Length >= n)
         {
             return;
         }
