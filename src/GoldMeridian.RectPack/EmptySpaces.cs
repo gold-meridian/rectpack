@@ -27,54 +27,53 @@ public sealed class EmptySpaces<TAllocator>(TAllocator? providerSeed = null)
         Spaces.Add(new RectXywh(0, 0, r.W, r.H));
     }
 
+    [SkipLocalsInit]
     public bool TryInsert(RectWh imageRectangle, out RectXywhf result)
     {
+        var flippingEnabled = FlippingMode == FlippingOption.Enabled;
+        var flippedWh = new RectWh(imageRectangle.H, imageRectangle.W);
+
         for (var i = Spaces.Count - 1; i >= 0; i--)
         {
-            // !!! Make sure this remains a value copy rather than a reference!
-            //     Accept() may mutate Spaces which will cause issues with
-            //     candidateSpace as it'll propagate to the references to that
-            //     come after the Spaces mutation.  This took me 30 minutes to
-            //     find.
             var candidateSpace = Spaces.Get(i);
 
-            if (FlippingMode == FlippingOption.Enabled)
+            var normal = CreatedSplits.InsertAndSplit(imageRectangle, in candidateSpace);
+
+            CreatedSplits chosen;
+            bool flip;
+            if (flippingEnabled)
             {
-                var normal = CreatedSplits.InsertAndSplit(imageRectangle, in candidateSpace);
-                var flippedWh = new RectWh(imageRectangle.H, imageRectangle.W);
                 var flipped = CreatedSplits.InsertAndSplit(flippedWh, in candidateSpace);
 
-                if (normal.Success && flipped.Success)
+                if (flipped.Success && (!normal.Success || flipped.BetterThan(normal)))
                 {
-                    if (flipped.BetterThan(normal))
-                    {
-                        return Accept(i, in candidateSpace, imageRectangle, in flipped, flippingNecessary: true, out result);
-                    }
-                    
-                    return Accept(i, in candidateSpace, imageRectangle, in normal, flippingNecessary: false, out result);
+                    chosen = flipped;
+                    flip = true;
                 }
-
-                if (normal.Success)
+                else if (normal.Success)
                 {
-                    return Accept(i, in candidateSpace, imageRectangle, in normal, flippingNecessary: false, out result);
+                    chosen = normal;
+                    flip = false;
                 }
-
-                if (flipped.Success)
+                else
                 {
-                    return Accept(i, in candidateSpace, imageRectangle, in flipped, flippingNecessary: true, out result);
+                    continue;
                 }
             }
             else
             {
-                var normal = CreatedSplits.InsertAndSplit(imageRectangle, in candidateSpace);
-
-                if (normal.Success)
+                if (!normal.Success)
                 {
-                    return Accept(i, in candidateSpace, imageRectangle, in normal, flippingNecessary: false, out result);
+                    continue;
                 }
+
+                chosen = normal;
+                flip = false;
             }
+
+            return Accept(i, in candidateSpace, imageRectangle, in chosen, flip, out result);
         }
-        
+
         result = default(RectXywhf);
         return false;
     }
