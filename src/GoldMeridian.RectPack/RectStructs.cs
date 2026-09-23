@@ -17,29 +17,11 @@ public struct RectWh(int w, int h) : IEquatable<RectWh>
     public int W = w;
     public int H = h;
 
-    /*
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public RectWh Flip()
-    {
-        (W, H) = (H, W);
-        return this;
-    }
-    */
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly RectWh Flipped()
     {
         return new RectWh(H, W);
     }
-
-    /*
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void ExpandWith(in RectXywhf r)
-    {
-        W = int.Max(W, r.X + r.W);
-        H = int.Max(H, r.Y + r.H);
-    }
-    */
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly RectWh ExpandWith(in RectXywhf r)
