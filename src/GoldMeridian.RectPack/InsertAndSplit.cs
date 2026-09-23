@@ -7,7 +7,7 @@ public struct CreatedSplits
     public readonly bool Success => Count > -1;
 
     public readonly RectXywh this[int i] => i == 0 ? Space0 : Space1;
-    
+
     public int Count;
     public RectXywh Space0;
     public RectXywh Space1;
@@ -17,7 +17,7 @@ public struct CreatedSplits
     {
         return Count < other.Count;
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CreatedSplits Failed()
     {
@@ -35,7 +35,7 @@ public struct CreatedSplits
     {
         return new CreatedSplits { Count = 1, Space0 = a };
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CreatedSplits Two(in RectXywh a, in RectXywh b)
     {
@@ -60,33 +60,25 @@ public struct CreatedSplits
 
         if (freeW > 0 && freeH == 0)
         {
-            var r = sp;
-            {
-                r.X += im.W;
-                r.W -= im.W;
-            }
-            return One(r);
+            var r = new RectXywh(sp.X + im.W, sp.Y, sp.W - im.W, sp.H);
+            return One(in r);
         }
 
         if (freeW == 0 && freeH > 0)
         {
-            var r = sp;
-            {
-                r.Y += im.H;
-                r.H -= im.H;
-            }
-            return One(r);
+            var r = new RectXywh(sp.X, sp.Y + im.H, sp.W, sp.H - im.H);
+            return One(in r);
         }
 
         if (freeW > freeH)
         {
             var biggerSplit = new RectXywh(sp.X + im.W, sp.Y, freeW, sp.H);
             var lesserSplit = new RectXywh(sp.X, sp.Y + im.H, im.W, freeH);
-            return Two(biggerSplit, lesserSplit);
+            return Two(in biggerSplit, in lesserSplit);
         }
 
         var bigger = new RectXywh(sp.X, sp.Y + im.H, sp.W, freeH);
         var lesser = new RectXywh(sp.X + im.W, sp.Y, freeW, im.H);
-        return Two(bigger, lesser);
+        return Two(in bigger, in lesser);
     }
 }

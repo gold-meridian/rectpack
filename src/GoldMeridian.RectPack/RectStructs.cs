@@ -50,40 +50,40 @@ public struct RectWh(int w, int h) : IEquatable<RectWh>
     }
 }
 
-public struct RectXywh(int x, int y, int w, int h)
+public readonly struct RectXywh(int x, int y, int w, int h)
 {
-    public readonly int Area => W * H;
+    public int Area => W * H;
 
-    public readonly int Perimeter => 2 * (W + H);
+    public int Perimeter => 2 * (W + H);
 
-    public int X = x;
-    public int Y = y;
-    public int W = w;
-    public int H = h;
+    public readonly int X = x;
+    public readonly int Y = y;
+    public readonly int W = w;
+    public readonly int H = h;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly RectWh GetWh()
+    public RectWh GetWh()
     {
         return new RectWh(W, H);
     }
 }
 
-public struct RectXywhf(int x, int y, int w, int h, bool flipped)
+public readonly struct RectXywhf(int x, int y, int w, int h, bool flipped)
 {
-    public readonly int Area => W * H;
+    public int Area => W * H;
 
-    public readonly int Perimeter => 2 * (W + H);
+    public int Perimeter => 2 * (W + H);
     
-    public int X = x;
-    public int Y = y;
-    public int W = flipped ? h : w;
-    public int H = flipped ? w : h;
-    public bool Flipped = flipped;
+    public readonly int X = x;
+    public readonly int Y = y;
+    public readonly int W = flipped ? h : w;
+    public readonly int H = flipped ? w : h;
+    public readonly bool Flipped = flipped;
 
     public RectXywhf(in RectXywh r) : this(r.X, r.Y, r.W, r.H, flipped: false) { }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly RectWh GetWh()
+    public RectWh GetWh()
     {
         return new RectWh(W, H);
     }
