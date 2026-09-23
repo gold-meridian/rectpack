@@ -23,7 +23,7 @@ internal static class BestBinFinder<TAllocator>
         EmptySpaces<TAllocator> root,
         RectSubject[] subjects,
         ReadOnlySpan<int> order,
-        in RectWh startingBin,
+        RectWh startingBin,
         int discardStep,
         BinDimension triedDimension,
         out RectWh resultBin,
@@ -169,23 +169,23 @@ internal static class BestBinFinder<TAllocator>
         EmptySpaces<TAllocator> root,
         RectSubject[] subjects,
         ReadOnlySpan<int> order,
-        in RectWh startingBin,
+        RectWh startingBin,
         int discardStep,
         out RectWh bestBin,
         out int totalAreaOnFailure
     )
     {
-        if (!TryPackForOrdering(root, subjects, order, in startingBin, discardStep, BinDimension.Both, out bestBin, out totalAreaOnFailure))
+        if (!TryPackForOrdering(root, subjects, order, startingBin, discardStep, BinDimension.Both, out bestBin, out totalAreaOnFailure))
         {
             return false;
         }
 
-        if (TryPackForOrdering(root, subjects, order, in bestBin, discardStep, BinDimension.Width, out var widthBin, out _))
+        if (TryPackForOrdering(root, subjects, order, bestBin, discardStep, BinDimension.Width, out var widthBin, out _))
         {
             bestBin = widthBin;
         }
 
-        if (TryPackForOrdering(root, subjects, order, in bestBin, discardStep, BinDimension.Height, out var heightBin, out _))
+        if (TryPackForOrdering(root, subjects, order, bestBin, discardStep, BinDimension.Height, out var heightBin, out _))
         {
             bestBin = heightBin;
         }

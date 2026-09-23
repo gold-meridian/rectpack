@@ -94,13 +94,13 @@ public sealed class RectPacker<TAllocator>(TAllocator? allocator = null)
         root.FlippingMode = flippingMode;
 
         var order = orders[0].AsSpan(0, n);
-        var success = BestBinFinder<TAllocator>.TryPackForOrderingBest(root, subjects, order, in maxBin, discardStep, out var bestBin, out _);
+        var success = BestBinFinder<TAllocator>.TryPackForOrderingBest(root, subjects, order, maxBin, discardStep, out var bestBin, out _);
         if (!success)
         {
             bestBin = maxBin;
         }
 
-        return FinalizePlacement(order, in bestBin, output);
+        return FinalizePlacement(order, bestBin, output);
     }
 
     // best_bin_finder.h find_best_packing_impl
@@ -128,7 +128,7 @@ public sealed class RectPacker<TAllocator>(TAllocator? allocator = null)
                 root,
                 subjects,
                 order,
-                in maxBin,
+                maxBin,
                 discardStep,
                 out var resultBin,
                 out var totalArea
@@ -155,18 +155,18 @@ public sealed class RectPacker<TAllocator>(TAllocator? allocator = null)
             }
         }
 
-        return FinalizePlacement(bestOrder.AsSpan(0, bestOrderLength), in bestBin, output);
+        return FinalizePlacement(bestOrder.AsSpan(0, bestOrderLength), bestBin, output);
     }
 
-    private RectWh FinalizePlacement(ReadOnlySpan<int> order, in RectWh bin, Span<PackedRect> output)
+    private RectWh FinalizePlacement(ReadOnlySpan<int> order, RectWh bin, Span<PackedRect> output)
     {
-        root.Reset(in bin);
+        root.Reset(bin);
 
         foreach (var k in order)
         {
             ref readonly var subject = ref subjects[k];
 
-            if (root.TryInsert(in subject.Wh, out var placed))
+            if (root.TryInsert(subject.Wh, out var placed))
             {
                 output[subject.OriginalIndex] = new PackedRect
                 {

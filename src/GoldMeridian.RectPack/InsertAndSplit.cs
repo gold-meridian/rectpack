@@ -43,7 +43,7 @@ public struct CreatedSplits
     }
 
     // [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static CreatedSplits InsertAndSplit(in RectWh im, in RectXywh sp)
+    public static CreatedSplits InsertAndSplit(RectWh im, in RectXywh sp)
     {
         var freeW = sp.W - im.W;
         var freeH = sp.H - im.H;

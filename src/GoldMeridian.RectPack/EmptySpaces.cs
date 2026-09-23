@@ -20,14 +20,14 @@ public sealed class EmptySpaces<TAllocator>(TAllocator? providerSeed = null)
     private TAllocator spaces = providerSeed ?? new TAllocator();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Reset(in RectWh r)
+    public void Reset(RectWh r)
     {
         RectsAabb = default(RectWh);
         Spaces.Reset();
         Spaces.Add(new RectXywh(0, 0, r.W, r.H));
     }
 
-    public bool TryInsert(in RectWh imageRectangle, out RectXywhf result)
+    public bool TryInsert(RectWh imageRectangle, out RectXywhf result)
     {
         for (var i = Spaces.Count - 1; i >= 0; i--)
         {
@@ -40,37 +40,37 @@ public sealed class EmptySpaces<TAllocator>(TAllocator? providerSeed = null)
 
             if (FlippingMode == FlippingOption.Enabled)
             {
-                var normal = CreatedSplits.InsertAndSplit(in imageRectangle, in candidateSpace);
+                var normal = CreatedSplits.InsertAndSplit(imageRectangle, in candidateSpace);
                 var flippedWh = new RectWh(imageRectangle.H, imageRectangle.W);
-                var flipped = CreatedSplits.InsertAndSplit(in flippedWh, in candidateSpace);
+                var flipped = CreatedSplits.InsertAndSplit(flippedWh, in candidateSpace);
 
                 if (normal.Success && flipped.Success)
                 {
                     if (flipped.BetterThan(normal))
                     {
-                        return Accept(i, in candidateSpace, in imageRectangle, in flipped, flippingNecessary: true, out result);
+                        return Accept(i, in candidateSpace, imageRectangle, in flipped, flippingNecessary: true, out result);
                     }
                     
-                    return Accept(i, in candidateSpace, in imageRectangle, in normal, flippingNecessary: false, out result);
+                    return Accept(i, in candidateSpace, imageRectangle, in normal, flippingNecessary: false, out result);
                 }
 
                 if (normal.Success)
                 {
-                    return Accept(i, in candidateSpace, in imageRectangle, in normal, flippingNecessary: false, out result);
+                    return Accept(i, in candidateSpace, imageRectangle, in normal, flippingNecessary: false, out result);
                 }
 
                 if (flipped.Success)
                 {
-                    return Accept(i, in candidateSpace, in imageRectangle, in flipped, flippingNecessary: true, out result);
+                    return Accept(i, in candidateSpace, imageRectangle, in flipped, flippingNecessary: true, out result);
                 }
             }
             else
             {
-                var normal = CreatedSplits.InsertAndSplit(in imageRectangle, in candidateSpace);
+                var normal = CreatedSplits.InsertAndSplit(imageRectangle, in candidateSpace);
 
                 if (normal.Success)
                 {
-                    return Accept(i, in candidateSpace, in imageRectangle, in normal, flippingNecessary: false, out result);
+                    return Accept(i, in candidateSpace, imageRectangle, in normal, flippingNecessary: false, out result);
                 }
             }
         }
@@ -83,7 +83,7 @@ public sealed class EmptySpaces<TAllocator>(TAllocator? providerSeed = null)
     private bool Accept(
         int i,
         in RectXywh candidateSpace,
-        in RectWh imageRectangle,
+        RectWh imageRectangle,
         in CreatedSplits splits,
         bool flippingNecessary,
         out RectXywhf result
