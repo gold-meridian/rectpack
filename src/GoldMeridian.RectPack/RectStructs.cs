@@ -10,7 +10,7 @@ public struct RectWh(int w, int h) : IEquatable<RectWh>
 
     public readonly int MinSide => H < W ? H : W;
 
-    public readonly int Area => W * H;
+    public readonly long Area => (long)W * H;
 
     public readonly int Perimeter => 2 * (W + H);
 
