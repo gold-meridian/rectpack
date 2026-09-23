@@ -188,7 +188,9 @@ public sealed class RectPacker<TAllocator>(TAllocator? allocator = null)
 
     private void EnsureCapacity(int n)
     {
-        if (subjects.Length >= n)
+        // Special case when 0, since we want to ensure orders' elements get
+        // initialized (even if they're zero-length arrays).
+        if (subjects.Length >= n && subjects.Length != 0)
         {
             return;
         }
