@@ -9,13 +9,15 @@ public enum FlippingOption
 }
 
 public sealed class EmptySpaces<TAllocator>(TAllocator? providerSeed = null)
-    where TAllocator : class, IEmptySpaceAllocator, new()
+    where TAllocator : struct, IEmptySpaceAllocator
 {
     public FlippingOption FlippingMode { get; set; } = FlippingOption.Enabled;
 
     public RectWh RectsAabb { get; private set; }
 
-    public TAllocator Spaces { get; } = providerSeed ?? new TAllocator();
+    public ref TAllocator Spaces => ref spaces;
+
+    private TAllocator spaces = providerSeed ?? new TAllocator();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Reset(in RectWh r)

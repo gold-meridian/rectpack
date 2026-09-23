@@ -17,7 +17,7 @@ public interface IEmptySpaceAllocator
     ref readonly RectXywh Get(int i);
 }
 
-public sealed class DefaultEmptySpaces : IEmptySpaceAllocator
+public readonly struct DefaultEmptySpaces() : IEmptySpaceAllocator
 {
     private readonly List<RectXywh> spaces = new(capacity: 64);
 
@@ -54,7 +54,7 @@ public sealed class DefaultEmptySpaces : IEmptySpaceAllocator
     }
 }
 
-public sealed class StaticEmptySpaces(int capacity) : IEmptySpaceAllocator
+public struct StaticEmptySpaces(int capacity) : IEmptySpaceAllocator
 {
     public int Count { get; private set; }
 
@@ -88,7 +88,7 @@ public sealed class StaticEmptySpaces(int capacity) : IEmptySpaceAllocator
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ref readonly RectXywh Get(int i)
+    public readonly ref readonly RectXywh Get(int i)
     {
         return ref spaces[i];
     }

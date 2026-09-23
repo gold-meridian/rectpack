@@ -16,7 +16,7 @@ internal struct RectSubject
 }
 
 internal static class BestBinFinder<TAllocator>
-    where TAllocator : class, IEmptySpaceAllocator, new()
+    where TAllocator : struct, IEmptySpaceAllocator
 {
     // Un-templated adaption of best_packing_for_ordering_impl
     public static bool TryPackForOrdering(

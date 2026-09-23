@@ -16,7 +16,7 @@ public struct PackedRect
 }
 
 public sealed class RectPacker<TAllocator>(TAllocator? allocator = null)
-    where TAllocator : class, IEmptySpaceAllocator, new()
+    where TAllocator : struct, IEmptySpaceAllocator
 {
     private readonly EmptySpaces<TAllocator> root = new(allocator ?? new TAllocator());
 

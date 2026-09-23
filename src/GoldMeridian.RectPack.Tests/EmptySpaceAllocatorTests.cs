@@ -16,7 +16,7 @@ public static class EmptySpaceAllocatorTests
     }
 
     private static void ExerciseBasicContract<TAllocator>(TAllocator allocator)
-        where TAllocator : class, IEmptySpaceAllocator, new()
+        where TAllocator : struct, IEmptySpaceAllocator
     {
         allocator.Reset();
 
