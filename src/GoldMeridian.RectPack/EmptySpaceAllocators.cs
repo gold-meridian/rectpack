@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace GoldMeridian.RectPack;
 
@@ -14,7 +13,7 @@ public interface IEmptySpaceAllocator
 
     void RemoveAt(int i);
 
-    ref readonly RectXywh Get(int i);
+    RectXywh Get(int i);
 }
 
 public readonly struct DefaultEmptySpaces() : IEmptySpaceAllocator
@@ -47,10 +46,9 @@ public readonly struct DefaultEmptySpaces() : IEmptySpaceAllocator
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ref readonly RectXywh Get(int i)
+    public RectXywh Get(int i)
     {
-        var span = CollectionsMarshal.AsSpan(spaces);
-        return ref span[i];
+        return spaces[i];
     }
 }
 
@@ -88,8 +86,8 @@ public struct StaticEmptySpaces(int capacity) : IEmptySpaceAllocator
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly ref readonly RectXywh Get(int i)
+    public readonly RectXywh Get(int i)
     {
-        return ref spaces[i];
+        return spaces[i];
     }
 }
