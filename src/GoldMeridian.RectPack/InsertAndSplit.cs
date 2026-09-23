@@ -42,43 +42,55 @@ public struct CreatedSplits
         return new CreatedSplits { Count = 2, Space0 = a, Space1 = b };
     }
 
-    // [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CreatedSplits InsertAndSplit(RectWh im, in RectXywh sp)
     {
         var freeW = sp.W - im.W;
         var freeH = sp.H - im.H;
 
-        if (freeW < 0 || freeH < 0)
+        if ((freeW | freeH) < 0)
         {
-            return Failed();
+            return new CreatedSplits { Count = -1 };
         }
 
-        if (freeW == 0 && freeH == 0)
+        if (freeW == 0)
         {
-            return None();
+            if (freeH == 0)
+            {
+                return default(CreatedSplits);
+            }
+
+            return new CreatedSplits
+            {
+                Count = 1,
+                Space0 = new RectXywh(sp.X, sp.Y + im.H, sp.W, sp.H - im.H),
+            };
         }
 
-        if (freeW > 0 && freeH == 0)
+        if (freeH == 0)
         {
-            var r = new RectXywh(sp.X + im.W, sp.Y, sp.W - im.W, sp.H);
-            return One(in r);
-        }
-
-        if (freeW == 0 && freeH > 0)
-        {
-            var r = new RectXywh(sp.X, sp.Y + im.H, sp.W, sp.H - im.H);
-            return One(in r);
+            return new CreatedSplits
+            {
+                Count = 1,
+                Space0 = new RectXywh(sp.X + im.W, sp.Y, sp.W - im.W, sp.H),
+            };
         }
 
         if (freeW > freeH)
         {
-            var biggerSplit = new RectXywh(sp.X + im.W, sp.Y, freeW, sp.H);
-            var lesserSplit = new RectXywh(sp.X, sp.Y + im.H, im.W, freeH);
-            return Two(in biggerSplit, in lesserSplit);
+            return new CreatedSplits
+            {
+                Count = 2,
+                Space0 = new RectXywh(sp.X + im.W, sp.Y, freeW, sp.H),
+                Space1 = new RectXywh(sp.X, sp.Y + im.H, im.W, freeH),
+            };
         }
 
-        var bigger = new RectXywh(sp.X, sp.Y + im.H, sp.W, freeH);
-        var lesser = new RectXywh(sp.X + im.W, sp.Y, freeW, im.H);
-        return Two(in bigger, in lesser);
+        return new CreatedSplits
+        {
+            Count = 2,
+            Space0 = new RectXywh(sp.X, sp.Y + im.H, sp.W, freeH),
+            Space1 = new RectXywh(sp.X + im.W, sp.Y, freeW, im.H),
+        };
     }
 }
