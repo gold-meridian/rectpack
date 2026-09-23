@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\GoldMeridian.RectPack.Tests\GoldMeridian.RectPack.Tests.csproj"/>
         <ProjectReference Include="..\GoldMeridian.RectPack\GoldMeridian.RectPack.csproj"/>
     </ItemGroup>
 

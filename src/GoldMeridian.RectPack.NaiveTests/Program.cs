@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using GoldMeridian.RectPack.Tests;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -38,7 +39,7 @@ internal static class Program
 
         Console.WriteLine($"    Packing took {sw.Elapsed.TotalMilliseconds}ms");
 
-        var success = !AnyIntersects(output);
+        var success = !TestHelpers.AnyOverlaps(output);
         if (success)
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -78,27 +79,6 @@ internal static class Program
         }
 
         return [.. list];
-    }
-
-    private static bool AnyIntersects(ReadOnlySpan<PackedRect> rectangles)
-    {
-        for (var i = 0; i < rectangles.Length; i++)
-        for (var j = i + 1; j < rectangles.Length; j++)
-        {
-            if (!RectIntersects(in rectangles[i], in rectangles[j]))
-            {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private static bool RectIntersects(in PackedRect a, in PackedRect b)
-    {
-        return b.X < a.X + a.W && a.X < b.X + b.W && b.Y < a.Y + a.H && a.Y < b.Y + b.H;
     }
 
     private static void SaveAsImage(PackedRect[] rectangles, RectWh bounds, string file)

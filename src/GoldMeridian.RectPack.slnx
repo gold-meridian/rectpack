@@ -1,4 +1,6 @@
 <Solution>
+  <Project Path="GoldMeridian.RectPack.Benchmarks/GoldMeridian.RectPack.Benchmarks.csproj" />
   <Project Path="GoldMeridian.RectPack.NaiveTests/GoldMeridian.RectPack.NaiveTests.csproj" />
+  <Project Path="GoldMeridian.RectPack.Tests/GoldMeridian.RectPack.Tests.csproj" />
   <Project Path="GoldMeridian.RectPack/GoldMeridian.RectPack.csproj" />
 </Solution>
