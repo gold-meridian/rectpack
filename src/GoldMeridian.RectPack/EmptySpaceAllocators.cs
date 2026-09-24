@@ -16,11 +16,13 @@ public interface IEmptySpaceAllocator
     RectXywh Get(int i);
 }
 
-public readonly struct DefaultEmptySpaces() : IEmptySpaceAllocator
+public readonly struct DefaultEmptySpaces(int startingCapacity) : IEmptySpaceAllocator
 {
-    private readonly List<RectXywh> spaces = new(capacity: 64);
+    private readonly List<RectXywh> spaces = new(startingCapacity);
 
     public int Count => spaces.Count;
+
+    public DefaultEmptySpaces() : this(64) { }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Reset()

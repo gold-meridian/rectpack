@@ -213,7 +213,7 @@ public sealed class RectPacker<TAllocator>(TAllocator? allocator = null)
 public static class RectPacker
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static RectPacker<DefaultEmptySpaces> CreateDefault()
+    public static RectPacker<DefaultEmptySpaces> CreateDefault(int startingCapacity = 64)
     {
         return new RectPacker<DefaultEmptySpaces>();
     }
