@@ -15,46 +15,69 @@ internal static class Program
 {
     public static void Main()
     {
-        for (var i = 0; i < 10; i++)
-        {
-            RunTests(i);
-        }
+        RunTests();
     }
 
     private static readonly Stopwatch sw = new();
     private static readonly RectPacker<DefaultEmptySpaces> packer = RectPacker.CreateDefault();
 
-    private static void RunTests(int seed)
+    private static void RunTests()
     {
-        var r = new Random(seed);
-        var rectangles = CreateRectangles(r);
-        Console.WriteLine($"Test {seed}:");
-        Console.WriteLine($"    Packing '{rectangles.Length}' rectangles...");
-
-        var output = new PackedRect[rectangles.Length];
-
-        sw.Restart();
-        var bounds = packer.Pack(rectangles, output, maxBinSide: 4096);
-        sw.Stop();
-
-        Console.WriteLine($"    Packing took {sw.Elapsed.TotalMilliseconds}ms");
-
-        var success = !TestHelpers.AnyOverlaps(output);
-        if (success)
+        for (var i = 0; i < 10; i++)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("    Packing passed");
+            var r = new Random(i);
+            var rectangles = CreateRectangles(r);
+            Console.WriteLine($"Test {i}:");
+            Console.WriteLine($"    Packing '{rectangles.Length}' rectangles...");
+
+            var output = new PackedRect[rectangles.Length];
+
+            sw.Restart();
+            var bounds = packer.Pack(rectangles, output, maxBinSide: 4096);
+            sw.Stop();
+
+            Console.WriteLine($"    Packing took {sw.Elapsed.TotalMilliseconds}ms");
+
+            var success = !TestHelpers.AnyOverlaps(output);
+            if (success)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("    Packing passed");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("    Packing failed due to intersections");
+            }
+
+            Console.ResetColor();
+
+            var imageName = $"image{i}.png";
+            SaveAsImage(output, bounds, imageName);
         }
-        else
+
+        Console.WriteLine("Running warmed-up tests...");
+
+        var totalRuns = 0;
+        var totalMs = 0.0;
+        for (var i = 0; i < 10; i++)
+        for (var j = 0; j < 10; j++)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("    Packing failed due to intersections");
+            totalRuns++;
+            
+            var r = new Random(i);
+            var rectangles = CreateRectangles(r);
+            var output = new PackedRect[rectangles.Length];
+                
+            sw.Restart();
+            _ = packer.Pack(rectangles, output, maxBinSide: 4096);
+            sw.Stop();
+            
+            totalMs += sw.ElapsedMilliseconds;
         }
-
-        Console.ResetColor();
-
-        var imageName = $"image{seed}.png";
-        SaveAsImage(output, bounds, imageName);
+        
+        Console.WriteLine($"Average time: {totalMs / totalRuns}ms");
+        Console.ReadKey();
     }
 
     private static RectWh[] CreateRectangles(Random r)
