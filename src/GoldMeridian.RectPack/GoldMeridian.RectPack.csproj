@@ -5,6 +5,19 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <Version>1.0.0</Version>
+        <FileVersion>$(Version)</FileVersion>
+        <AssemblyVersion>$(Version)</AssemblyVersion>
+        
+        <PackageId>GoldMeridian.RectPack</PackageId>
+        <Authors>tomat</Authors>
+        <Tags>rectpack rectpack2d rectangles rectangle packing pack packer atlas spritesheet texturepacker textureatlas</Tags>
+        <Description>.NET port of rectpack2D</Description>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/gold-meridian/rectpack</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/gold-meridian/rectpack</PackageProjectUrl>
     </PropertyGroup>
 
 </Project>
